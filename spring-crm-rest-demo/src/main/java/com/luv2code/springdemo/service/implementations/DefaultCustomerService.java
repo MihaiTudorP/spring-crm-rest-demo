@@ -19,7 +19,7 @@ public class DefaultCustomerService implements CustomerService {
 	
 	@Override
 	@Transactional
-	public List<Customer> getCustomers() {
+	public List<Customer> getAllCustomers() {
 		return customerRepository.findAll();
 	}
 
