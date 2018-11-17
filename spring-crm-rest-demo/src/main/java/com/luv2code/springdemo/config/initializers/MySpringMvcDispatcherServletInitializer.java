@@ -1,6 +1,8 @@
-package com.luv2code.springdemo.config;
+package com.luv2code.springdemo.config.initializers;
 
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
+
+import com.luv2code.springdemo.config.DemoAppConfig;
 
 public class MySpringMvcDispatcherServletInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
