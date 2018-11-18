@@ -1,6 +1,7 @@
 package com.luv2code.springdemo.config;
 
 import java.beans.PropertyVetoException;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -16,14 +17,18 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 @Configuration
@@ -33,7 +38,7 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 @ComponentScan("com.luv2code.springdemo")
 @EnableJpaRepositories(basePackages= {"com.luv2code.springdemo.repositories"})
 @PropertySource({ "classpath:persistence-mysql.properties" })
-public class DemoAppConfig implements WebMvcConfigurer {
+public class DemoAppConfig extends WebMvcConfigurationSupport {
 
 	@Autowired
 	private Environment env;
@@ -138,10 +143,28 @@ public class DemoAppConfig implements WebMvcConfigurer {
 		Properties props = new Properties();
 		props.setProperty("hibernate.dialect", env.getProperty("hibernate.dialect"));
 		props.setProperty("hibernate.show_sql", env.getProperty("hibernate.show_sql"));
+		props.setProperty("hibernate.enable_lazy_load_no_trans", env.getProperty("hibernate.enable_lazy_load_no_trans"));
 		entityManagerFactoryBean.setJpaProperties(props);
 		return entityManagerFactoryBean;
 	}
 	
+	public MappingJackson2HttpMessageConverter jacksonMessageConverter(){
+        MappingJackson2HttpMessageConverter messageConverter = new MappingJackson2HttpMessageConverter();
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new Hibernate5Module());
+
+        messageConverter.setObjectMapper(mapper);
+        return messageConverter;
+
+    }
+
+    @Override
+    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+        //Here we add our custom-configured HttpMessageConverter
+        converters.add(jacksonMessageConverter());
+        super.configureMessageConverters(converters);
+    }
 }
 
 
