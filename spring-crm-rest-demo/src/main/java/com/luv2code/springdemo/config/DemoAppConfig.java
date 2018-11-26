@@ -1,6 +1,7 @@
 package com.luv2code.springdemo.config;
 
 import java.beans.PropertyVetoException;
+import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
@@ -9,6 +10,7 @@ import javax.sql.DataSource;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.jpa.HibernatePersistenceProvider;
+import org.hibernate.proxy.pojo.javassist.JavassistLazyInitializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -27,8 +29,14 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 @Configuration
@@ -152,12 +160,30 @@ public class DemoAppConfig extends WebMvcConfigurationSupport {
         MappingJackson2HttpMessageConverter messageConverter = new MappingJackson2HttpMessageConverter();
 
         ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new Hibernate5Module());
+        SimpleModule simpleModule = new SimpleModule("SimpleModule", new Version(1,0,0,null));
+        simpleModule.addSerializer(
+                JavassistLazyInitializer.class,
+                new HibernateLazyInitializerSerializer()
+        );
+        mapper.registerModule(simpleModule);
+        mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
 
         messageConverter.setObjectMapper(mapper);
         return messageConverter;
 
     }
+	
+	public static class HibernateLazyInitializerSerializer extends JsonSerializer<JavassistLazyInitializer> {
+
+	    @Override
+	    public void serialize(JavassistLazyInitializer initializer, JsonGenerator jsonGenerator,
+	            SerializerProvider serializerProvider)
+	            throws IOException, JsonProcessingException {
+	        jsonGenerator.writeNull();
+	    }
+	}
+	
+	
 
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {

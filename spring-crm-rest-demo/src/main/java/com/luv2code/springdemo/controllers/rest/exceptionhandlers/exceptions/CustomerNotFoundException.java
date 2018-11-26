@@ -12,6 +12,11 @@ public class CustomerNotFoundException extends RuntimeException {
 	/**
 	 * 
 	 */
+	private static final long serialVersionUID = 1657963451990061996L;
+
+	/**
+	 * 
+	 */
 	public CustomerNotFoundException() {
 	}
 
