@@ -29,8 +29,6 @@ public class Customer implements Serializable, Persistable<Integer> {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="id")
-	@NotNull(message="The customer id cannot be null!")
-	@NotBlank(message="The customer id cannot be blank!")
 	private Integer id;
 	
 	@NotNull(message="The first name is required!")

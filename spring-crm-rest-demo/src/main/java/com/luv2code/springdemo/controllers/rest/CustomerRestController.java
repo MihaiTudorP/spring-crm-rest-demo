@@ -6,6 +6,7 @@ package com.luv2code.springdemo.controllers.rest;
 import java.util.List;
 
 import javax.persistence.EntityNotFoundException;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,7 +47,7 @@ public class CustomerRestController {
 	}
 	
 	@PostMapping("/customers")
-	public Customer addCustomer(@RequestBody Customer customer) {
+	public Customer addCustomer(@RequestBody @Valid Customer customer) {
 		customer.setId(0);
 		customerService.saveCustomer(customer);
 		return customer;
