@@ -24,9 +24,7 @@ public class DefaultCustomerService implements CustomerService {
 	}
 
 	@Override
-	@Transactional
 	public void saveCustomer(Customer customer) {
-
 		customerRepository.save(customer);
 	}
 

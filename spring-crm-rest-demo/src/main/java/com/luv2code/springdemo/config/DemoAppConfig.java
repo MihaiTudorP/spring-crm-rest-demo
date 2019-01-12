@@ -31,7 +31,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupp
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -160,7 +159,7 @@ public class DemoAppConfig extends WebMvcConfigurationSupport {
         MappingJackson2HttpMessageConverter messageConverter = new MappingJackson2HttpMessageConverter();
 
         ObjectMapper mapper = new ObjectMapper();
-        SimpleModule simpleModule = new SimpleModule("SimpleModule", new Version(1,0,0,null));
+        SimpleModule simpleModule = new SimpleModule("SimpleModule");
         simpleModule.addSerializer(
                 JavassistLazyInitializer.class,
                 new HibernateLazyInitializerSerializer()

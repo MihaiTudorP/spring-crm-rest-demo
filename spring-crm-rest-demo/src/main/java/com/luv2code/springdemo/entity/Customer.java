@@ -12,12 +12,14 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import org.springframework.data.domain.Persistable;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name="customer")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class Customer implements Serializable {
+public class Customer implements Serializable, Persistable<Integer> {
 
 	/**
 	 * 
@@ -55,7 +57,8 @@ public class Customer implements Serializable {
 		
 	}
 
-	public int getId() {
+	@Override
+	public Integer getId() {
 		return id;
 	}
 
@@ -90,6 +93,11 @@ public class Customer implements Serializable {
 	@Override
 	public String toString() {
 		return "Customer [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email + "]";
+	}
+
+	@Override
+	public boolean isNew() {
+		return this.id == 0 || this.id == null;
 	}
 		
 }
