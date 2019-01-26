@@ -1,6 +1,7 @@
 package com.luv2code.springdemo.service.implementations;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,34 +15,36 @@ import com.luv2code.springdemo.service.CustomerService;
 public class DefaultCustomerService implements CustomerService {
 
 	// need to inject customer dao
-	@Autowired
 	private CustomerRepository customerRepository;
 	
+	@Autowired
+	public DefaultCustomerService(CustomerRepository customerRepository) {
+		this.customerRepository = customerRepository;
+	}
+	
 	@Override
-	@Transactional
 	public List<Customer> getAllCustomers() {
 		return customerRepository.findAll();
 	}
 
 	@Override
-	@Transactional
 	public void saveCustomer(Customer customer) {
 		customerRepository.save(customer);
 	}
 
 	@Override
-	@Transactional
-	public Customer getCustomer(int id) {	
-		return customerRepository.getOne(id);
+	public Customer getCustomer(int id) {
+		Optional<Customer> result = customerRepository.findById(id);
+		if (result.isPresent()) return result.get();
+		return null;
 	}
 
 	@Override
-	@Transactional
 	public void deleteCustomer(int id) {
 		customerRepository.deleteById(id);
 	}
 	
-	@Transactional
+	@Override
 	public void deleteCustomer(Customer customer) {
 		customerRepository.delete(customer);
 	}

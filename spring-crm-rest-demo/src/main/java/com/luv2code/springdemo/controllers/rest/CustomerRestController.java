@@ -75,7 +75,7 @@ public class CustomerRestController {
 	
 	@PutMapping("/customers")
 	public ResponseEntity<Customer> updateCustomer(@RequestBody @Valid Customer customer){
-		if (customer.getId()==0) return new ResponseEntity<Customer>(customer, HttpStatus.NOT_FOUND);
+		if (customer.getId()==0) return new ResponseEntity<Customer>(customer, HttpStatus.BAD_REQUEST);
 		logger.info("Attempting to update customer: [{}]", customer);
 		try {
 			customerService.saveCustomer(customer);
