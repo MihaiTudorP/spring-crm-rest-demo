@@ -27,7 +27,7 @@ public class Customer implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="id")
-	private Integer id;
+	private Integer id = 0;
 	
 	@NotNull(message="The first name is required!")
 	@NotBlank(message="The first name cannot be blank!")

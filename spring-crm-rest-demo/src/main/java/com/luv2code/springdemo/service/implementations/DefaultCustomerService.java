@@ -24,6 +24,7 @@ public class DefaultCustomerService implements CustomerService {
 	}
 
 	@Override
+	@Transactional
 	public void saveCustomer(Customer customer) {
 		customerRepository.save(customer);
 	}
@@ -38,6 +39,11 @@ public class DefaultCustomerService implements CustomerService {
 	@Transactional
 	public void deleteCustomer(int id) {
 		customerRepository.deleteById(id);
+	}
+	
+	@Transactional
+	public void deleteCustomer(Customer customer) {
+		customerRepository.delete(customer);
 	}
 }
 
